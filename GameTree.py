@@ -8,18 +8,21 @@ class TreeNode:
         self.turnCount = 0
 
     def addChild(self, node):
-        node.p1points = self.p1points
-        node.p2points = self.p2points
-        node.turnCount = self.turnCount + 1
         self.children.append(node)
 
-    # Atļauj mums salīdzināt mūsu TreeNodes objektus ar == operatoru, šobrīd vēl neizmantoju
-    # ,bet kad vajadzēs salīdzināt nodes, lai neveidotu liekus aprēķinus gan jau noderēs
     def __eq__(self, other):
-        return self.p1points == other.p1points and self.p2points == other.p2points and self.turnCount == other.turnCount and self.data == other.data
+        if not isinstance(other, TreeNode):
+            return NotImplemented
+        return (
+            self.data == other.data and
+            self.p1points == other.p1points and
+            self.p2points == other.p2points and
+            self.turnCount == other.turnCount
+        )
 
     def __hash__(self):
         return hash((self.data, self.p1points, self.p2points, self.turnCount))
+
 
 def buildTree(startNumb):
     root = TreeNode(startNumb)
@@ -35,12 +38,20 @@ def createLevel(parentNode, createdNodes):
     nodes = [TreeNode(number * 2), TreeNode(number * 3), TreeNode(number * 4)]
 
     for node in nodes:
+        node.p1points = parentNode.p1points
+        node.p2points = parentNode.p2points
+        node.turnCount = parentNode.turnCount + 1
+
+        addPoints(node)
         
+        print(f"Mezgls {node.data} (P1: {node.p1points}, P2: {node.p2points}) ID: {id(node)}")
+
         if node not in createdNodes:
             parentNode.addChild(node)
-            addPoints(node)
             createdNodes.add(node)
             createLevel(node, createdNodes)
+        else:
+            print(f"Mezgls {node.data} (P1: {node.p1points}, P2: {node.p2points}) jau eksistē")
 
 def addPoints(node):
     if node.turnCount % 2 == 1:
