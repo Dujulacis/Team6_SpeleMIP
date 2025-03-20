@@ -51,7 +51,12 @@ def createLevel(parentNode, createdNodes):
             createdNodes.add(node)
             createLevel(node, createdNodes)
         else:
-            print(f"Mezgls {node.data} (P1: {node.p1points}, P2: {node.p2points}) jau eksistē")
+            for existing_node in createdNodes:
+                if existing_node == node:
+                    parentNode.addChild(existing_node)
+                    print(f"Mezgls {node.data} (P1: {node.p1points}, P2: {node.p2points}) jau eksistē, ID: {id(existing_node)}")
+                    break
+            
 
 def addPoints(node):
     if node.turnCount % 2 == 1:
