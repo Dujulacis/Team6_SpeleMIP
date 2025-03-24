@@ -1,11 +1,11 @@
 class TreeNode:
-    def __init__(self, data):
+    def __init__(self, data, depth=0):
         self.data = data
         self.parent = None
         self.children = []
         self.p1points = 0
         self.p2points = 0
-        self.turnCount = 0
+        self.turnCount = depth
 
     def addChild(self, node):
         self.children.append(node)
@@ -25,38 +25,43 @@ class TreeNode:
 
 
 def buildTree(startNumb):
-    root = TreeNode(startNumb)
+    root = TreeNode(startNumb, 0)
     createdNodes = set()
-    createLevel(root, createdNodes) 
+    createLevel(root, createdNodes, 3) # uzstādīts dzīļums - 3 līmeņi 
     return root
 
-def createLevel(parentNode, createdNodes):
+
+def createLevel(parentNode, createdNodes, maxDepth):
+    if parentNode.turnCount >= maxDepth:
+        return
+    
     number = parentNode.data
     if number >= 1200:
         return
     
-    nodes = [TreeNode(number * 2), TreeNode(number * 3), TreeNode(number * 4)]
+    nodes = [TreeNode(number * 2, parentNode.turnCount + 1),
+             TreeNode(number * 3, parentNode.turnCount + 1),
+             TreeNode(number * 4, parentNode.turnCount + 1)]
 
     for node in nodes:
         node.p1points = parentNode.p1points
         node.p2points = parentNode.p2points
-        node.turnCount = parentNode.turnCount + 1
-
+        
         addPoints(node)
         
-        print(f"Mezgls {node.data} (P1: {node.p1points}, P2: {node.p2points}) ID: {id(node)}")
+        print(f"Mezgls {node.data} (P1: {node.p1points}, P2: {node.p2points}) ID: {id(node)}") # to var nokomentēt, tas tikai priekš self pārbaudei
 
         if node not in createdNodes:
             parentNode.addChild(node)
             createdNodes.add(node)
-            createLevel(node, createdNodes)
+            createLevel(node, createdNodes, maxDepth)
         else:
             for existing_node in createdNodes:
                 if existing_node == node:
                     parentNode.addChild(existing_node)
-                    print(f"Mezgls {node.data} (P1: {node.p1points}, P2: {node.p2points}) jau eksistē, ID: {id(existing_node)}")
+                    print(f"Mezgls {node.data} (P1: {node.p1points}, P2: {node.p2points}) jau eksistē, ID: {id(existing_node)}") # tas arī
                     break
-            
+
 
 def addPoints(node):
     if node.turnCount % 2 == 1:
@@ -70,28 +75,13 @@ def addPoints(node):
         else:
             node.p2points += 1
 
+
 def printTree(root):
     for node in root.children:
-        print("--"*node.turnCount + ">" + str(node.data)+ f" (P1: {node.p1points}, P2: {node.p2points})")
+        print("--" * node.turnCount + ">" + str(node.data) + f" (P1: {node.p1points}, P2: {node.p2points})")
         printTree(node)
 
-def printFinalNodes(root):
-    def traverse(node, visited):
-        if node in visited:
-            return
-        visited.add(node)
-        
-        if not node.children:
-            print("--" * node.turnCount + ">" + str(node.data) + f" (P1: {node.p1points}, P2: {node.p2points})")
-        
-        for child in node.children:
-            traverse(child, visited)
-    
-    traverse(root, set())
 
 if __name__ == '__main__':
     Tree = buildTree(8)
     printTree(Tree)
-    print("\nFinal Nodes:")
-    printFinalNodes(Tree)
-
