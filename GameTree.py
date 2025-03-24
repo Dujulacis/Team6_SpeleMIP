@@ -84,4 +84,9 @@ def printTree(root):
 
 if __name__ == '__main__':
     Tree = buildTree(8)
+    # īslaicīgi, lai ģenerētu citā līmenī tālāk
+    # TODO pievienot normālu risinājumu
+    Tree.children[0].children[0].children[0].turnCount = 0
+    createLevel(Tree.children[0].children[0].children[0], set(), 3)
+
     printTree(Tree)
