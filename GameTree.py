@@ -29,12 +29,15 @@ class TreeNode:
     def __hash__(self):
         return hash((self.gameNum, self.p1points, self.p2points, self.turnCount))
 
+
 #  Sāk izveidot koku
 def buildTree(startNumb, depth=3):
     root = TreeNode(startNumb, 0)
     createdNodes = set()
-    createLevel(root, createdNodes, depth) # uzstādīts dzīļums - 3 līmeņi
+    createLevel(root, createdNodes, depth)  # uzstādīts dzīļums - 3 līmeņi
     return root
+
+
 """
     Galvenā fukcija, kura ģenerē koku, pēc nosacījumiem noteiktiem nosacījumiem.
     Tiek izveidots pēcteča mezgls, kuram ir pievienoti spēlētāju iegūtie punkti visos gadījumos
@@ -42,6 +45,8 @@ def buildTree(startNumb, depth=3):
     Pirms jauna mezgla piešķires tiek pārbaudīts vai jau identisks mezgls eksistē, ja
     eksistē tad piešķir jau eksistējošo mezglu, ja nē tad kokam tiek pievienots jaunais mezgls
 """
+
+
 def createLevel(parentNode, createdNodes, maxDepth):
     # Pārbaude vai dziļums ir sasniegts
     if parentNode.turnCount >= maxDepth:
@@ -54,14 +59,14 @@ def createLevel(parentNode, createdNodes, maxDepth):
 
     # Ģenerē 3 dažādos variantus
     nodes = []
-    for i in range(2,5):
+    for i in range(2, 5):
         nodes.append(TreeNode(number * i, parentNode.turnCount + 1))
 
     # Iziet cauri veidotajiem mezgliem
     for node in nodes:
         node.p1points = parentNode.p1points
         node.p2points = parentNode.p2points
-        
+
         addPoints(node)
         
         print(f"Mezgls {node.gameNum} (P1: {node.p1points}, P2: {node.p2points}) ID: {id(node)}") # to var nokomentēt, tas tikai priekš self pārbaudei
@@ -79,6 +84,7 @@ def createLevel(parentNode, createdNodes, maxDepth):
                     print(f"Mezgls {node.gameNum} (P1: {node.p1points}, P2: {node.p2points}) jau eksistē, ID: {id(existing_node)}") # tas arī
                     break
 
+
 # Sistēma kā pievieno punktus vai atņem spēlētājiem spēles laikā.
 def addPoints(node):
     if node.turnCount % 2 == 1:
@@ -92,9 +98,10 @@ def addPoints(node):
         else:
             node.p2points += 1
 
+
 # ģenerē no dota node noteiktā dziļumā tālāk koku
 def generateLevel(node, depth):
-    createLevel(node, set(), node.turnCount+depth)
+    createLevel(node, set(), node.turnCount + depth)
 
 
 def printTree(root):
