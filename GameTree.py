@@ -56,7 +56,7 @@ class TreeNode:
         # Ģenerē 3 dažādos variantus
         nodes = []
         for i in range(2, 5):
-            nodes.append(TreeNode(number * i, self.turnCount + 1))
+            nodes.append(self.__class__(number * i, self.turnCount + 1))
 
         # Iziet cauri veidotajiem mezgliem
         for node in nodes:
