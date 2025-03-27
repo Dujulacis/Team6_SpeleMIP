@@ -32,10 +32,10 @@ class TreeNode:
 
     #  Sāk izveidot koku
     def buildTree(self, startNumb, depth=3):
-        root = TreeNode(startNumb, 0)
+        # root = TreeNode(startNumb, 0)
         createdNodes = set()
-        TreeNode.createLevel(root, createdNodes, depth)  # uzstādīts dzīļums - 3 līmeņi
-        return root
+        TreeNode.createLevel(self, createdNodes, depth)  # uzstādīts dzīļums - 3 līmeņi
+        return self
 
 
     """
@@ -45,7 +45,6 @@ class TreeNode:
         Pirms jauna mezgla piešķires tiek pārbaudīts vai jau identisks mezgls eksistē, ja
         eksistē tad piešķir jau eksistējošo mezglu, ja nē tad kokam tiek pievienots jaunais mezgls
     """
-
 
     def createLevel(parentNode, createdNodes, maxDepth):
         # Pārbaude vai dziļums ir sasniegts
@@ -100,8 +99,8 @@ class TreeNode:
 
 
     # ģenerē no dota node noteiktā dziļumā tālāk koku
-    def generateLevel(node, depth):
-        TreeNode.createLevel(node, set(), node.turnCount + depth)
+    def generateLevel(self, depth):
+        TreeNode.createLevel(self, set(), self.turnCount + depth)
 
 
     def printTree(root):
@@ -112,10 +111,10 @@ class TreeNode:
 
 if __name__ == '__main__':
     # Izveido koku ar sākotnējo skaitli
-    ObjTree = TreeNode(8)
-    Tree = ObjTree.buildTree(8, 3)
+    Tree = TreeNode(8)
+    Tree.generateLevel(3)
     # īslaicīgi, lai ģenerētu citā līmenī tālāk
-    izveletais = Tree.children[0].children[0].children[0]
-    TreeNode.generateLevel(izveletais, 3)
+    # izveletais = Tree.children[0].children[0].children[0]
+    # TreeNode.generateLevel(izveletais, 3)
 
     TreeNode.printTree(Tree)
