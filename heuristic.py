@@ -5,24 +5,24 @@ class HeurTreeNode(GameTree.TreeNode):
 
     def heuristic(self):
         return (self.p1points - self.p2points) + (
-                    1200 - self.gameNum) * 0.01  # Fromula, kura dod koeficentu. (Vel būs uzalbota)
+                1200 - self.gameNum) * 0.01  # Fromula, kura dod koeficentu. (Vel būs uzalbota)
 
-    def ShortWinP1(node, path=[]):
-        path.append((node.gameNum, node.p1points, node.p2points, node.turnCount))
-        if node.gameNum >= 1200 and node.p1points > node.p2points:
-            return path
+    # def ShortWinP1(node, path=[]):
+    #     path.append((node.gameNum, node.p1points, node.p2points, node.turnCount))
+    #     if node.gameNum >= 1200 and node.p1points > node.p2points:
+    #         return path
+    #
+    #     best_path = None
+    #     for child in sorted(node.children, key=lambda x: x.p1points - x.p2points, reverse=True):
+    #         new_path = node.ShortWinP1(child, path[:])
+    #         if new_path and (best_path is None or len(new_path) < len(best_path)):
+    #             best_path = new_path
+    #
+    #     return best_path
 
-        best_path = None
-        for child in sorted(node.children, key=lambda x: x.p1points - x.p2points, reverse=True):
-            new_path = HeurTreeNode.ShortWinP1(child, path[:])
-            if new_path and (best_path is None or len(new_path) < len(best_path)):
-                best_path = new_path
-
-        return best_path
-
-    def printPath(path):
-        for data, p1, p2, turn in path:
-            print(f"{data} (P1: {p1}, P2: {p2}), Move: {turn}")
+    # def printPath(path):
+    #     for data, p1, p2, turn in path:
+    #         print(f"{data} (P1: {p1}, P2: {p2}), Move: {turn}")
 
     def printTree(self):
         for node in self.children:
@@ -31,14 +31,14 @@ class HeurTreeNode(GameTree.TreeNode):
                   f" (P1: {node.p1points}, P2: {node.p2points}), Bestmove: {node.heuristic()}")
             node.printTree()
 
+
 if __name__ == '__main__':
     Tree = HeurTreeNode(8)
-    Tree.generateLevel(120)
+    Tree.generateLevel(4)
     Tree.printTree()
-    short_path = HeurTreeNode.ShortWinP1(Tree)
 
-    HeurTreeNode.printTree(Tree)
+    # short_path = Tree.ShortWinP1()
 
-if short_path:
-    print("\nShort win for P1:")
-    HeurTreeNode.printPath(short_path)
+# if short_path:
+#     print("\nShort win for P1:")
+#     HeurTreeNode.printPath(short_path)
