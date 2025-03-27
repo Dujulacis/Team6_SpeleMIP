@@ -31,16 +31,9 @@ class HeurTreeNode(GameTree.TreeNode):
                   f" (P1: {node.p1points}, P2: {node.p2points}), Bestmove: {node.heuristic()}")
             node.printTree()
 
-    def buildTree(startNumb, depth=3):
-        root = HeurTreeNode(startNumb, 0)
-        createdNodes = set()
-        GameTree.createLevel(root, createdNodes, depth)  # uzstādīts dzīļums - 3 līmeņi
-        return root
-
-
 if __name__ == '__main__':
     Tree = HeurTreeNode(8)
-    Tree.generateLevel(3)
+    Tree.generateLevel(120)
     Tree.printTree()
     short_path = HeurTreeNode.ShortWinP1(Tree)
 
