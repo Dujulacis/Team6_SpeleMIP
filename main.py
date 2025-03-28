@@ -1,113 +1,224 @@
 ## IMPORTS ##
-# GUI
-import tkinter as tk
+
+import customtkinter as ctk
+from customtkinter import *
 from tkinter import messagebox
 
-## CODE ##
+class StartUI(ctk.CTk):
+    
+    def __init__(self):
+        super().__init__()
+
+        #ctk.set_appearance_mode("light")
+        ctk.set_default_color_theme("green")
+        self.geometry("800x600")
+        self.title("Multiply!")
+        self.resizable(False, False)
+
+        self.team_label = ctk.CTkLabel(self,
+            text="Team 6",
+            text_color="gray")
+        self.team_label.pack()
+
+        self.header = ctk.CTkLabel(self,
+            text="Multiply!",
+            font=("Courier", 50, "bold"))
+        self.header.place(relx=0.5, rely=0.2, anchor=CENTER)
+
+        self.starting_param_screen()
+
+    def starting_param_screen(self):
+
+        # Algorithm selection 
+
+        self.algorithm_label = ctk.CTkLabel(self,
+            text="Choose algorithm used:",
+            font=("Helvetica", 20, "bold"))
+        self.algorithm_label.place(relx=0.5, rely=0.325, anchor=CENTER)
+
+        self.alg_rad_var = ctk.StringVar(value="Minimax")
+
+        self.alg_radio1 = ctk.CTkRadioButton(self,
+            text="Minimax",
+            value="Minimax",
+            variable=self.alg_rad_var,
+            font=("Helvetica", 18))
+        self.alg_radio1.place(relx=0.33, rely=0.4, anchor=CENTER)
+
+        self.alg_radio2 = ctk.CTkRadioButton(self,
+            text="Alpha-Beta",
+            value="Alpha-Beta",
+            variable=self.alg_rad_var,
+            font=("Helvetica", 18))
+        self.alg_radio2.place(relx=0.66, rely=0.4, anchor=CENTER)
+
+        # Player selection
+
+        self.player_label = ctk.CTkLabel(self,
+            text="Choose starting player:",
+            font=("Helvetica", 20, "bold"))
+        self.player_label.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        self.play_rad_var = ctk.StringVar(value="0")
+
+        self.play_radio1 = ctk.CTkRadioButton(self,
+            text="Player 1",
+            value="0",
+            variable=self.play_rad_var,
+            font=("Helvetica", 18))
+        self.play_radio1.place(relx=0.33, rely=0.575, anchor=CENTER)
+
+        self.play_radio2 = ctk.CTkRadioButton(self,
+            text="Player 2",
+            value="1",
+            variable=self.play_rad_var,
+            font=("Helvetica", 18))
+        self.play_radio2.place(relx=0.66, rely=0.575, anchor=CENTER)
+
+        self.btn = ctk.CTkButton(self,
+            text="Let's go!",
+            command=self.start_game,
+            font=("Helvetica", 18))
+        self.btn.place(relx=0.5, rely=0.7, anchor=CENTER)
+    
+    def start_game(self):
+
+        for widget in self.winfo_children():
+            if widget not in {self.header, self.team_label}:
+                widget.destroy()
+
+        self.game_ui = GameUI(self)
 
 class GameUI:
-    def interface():
+    def __init__(self, parent):
+        self.parent = parent
 
-        # WINDOW SETUP
-        root = tk.Tk()
-        root.title("Multiply!")
-        root.configure(bg='#1DA1F2')
-        window_width = 800
-        window_height = 600
-        screen_width = root.winfo_screenwidth()
-        screen_height = root.winfo_screenheight()
-        position_top = int(screen_height / 2 - window_height / 2)
-        position_right = int(screen_width / 2 - window_width / 2)
-        root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
-        root.resizable(False, False)
+        # Variable initialization
 
-        player_scores = [0, 0]
-        curr_number = None
-        curr_player = 0
-        turn = 1
+        self.player_scores = [0, 0]
+        self.curr_number = None
+        self.curr_alg = self.parent.alg_rad_var.get()
+        self.curr_player = self.parent.play_rad_var.get()
 
-        team_label = tk.Label(root, text="Team 6", bg='#1DA1F2', fg = "gray")
-        team_label.pack()
+        # Persistent labels
 
-        score_label = tk.Label(root, text=f"Player 1: {player_scores[0]} | Player 2: {player_scores[1]}", font=("Arial", 20, "bold"), bg='#1DA1F2', fg='white')
-        score_label.place(relx=0.5, rely=0.95, anchor="center")
-        
-        # START PAGE
-        def start():
-            nonlocal curr_player
-            header = tk.Label(root, text="Multiply!", font=("Courier", 30, "bold"), bg='#1DA1F2', fg='white')
-            header.pack(pady=(60,30))
+        self.curr_alg_label = ctk.CTkLabel(self.parent,
+            text=f"Algorithm: {self.curr_alg}",
+            font=("Helvetica", 18))
+        self.curr_alg_label.place(relx=0.5, rely=0.325, anchor=CENTER) # Of course algorithm isnt working yet
 
-            player_label = tk.Label(root, text=f"Player {curr_player + 1}'s turn", font=("Arial", 20, "bold"), bg='#1DA1F2', fg='white')
-            player_label.pack(pady=(10, 40))
+        self.curr_player_label = ctk.CTkLabel(self.parent,
+            text=f"Player {int(self.curr_player) + 1}'s turn",
+            font=("Helvetica", 18, "bold"))
+        self.curr_player_label.place(relx=0.5, rely=0.4, anchor=CENTER)
 
-            instruction_label = tk.Label(root, text="Choose starting number:", font=("Arial", 20, "bold"), bg='#1DA1F2', fg='white')
-            instruction_label.pack(pady=10)
+        self.score_label = ctk.CTkLabel(self.parent,
+            text=f"Player 1: {self.player_scores[0]} | Player 2: {self.player_scores[1]}",
+            font=("Helvetica", 18, "bold"))
+        self.score_label.place(relx=0.5, rely=0.95, anchor=CENTER)
 
-            num_button_frame = tk.Frame(root, bg='#1DA1F2')
-            num_button_array = []
-            for i in range(8, 19):
-                num_button = tk.Button(num_button_frame, text=str(i), command=lambda n=i: prepare_num(n), font=("Arial", 18), fg='#1DA1F2', bg='white', width=3, height = 1)
-                num_button_array.append(num_button)
-                num_button.pack(side='left', padx=10)
-            num_button_frame.pack(pady=5)
 
-            # TURN FUNCTION
-            def prepare_num(num):
-                print(turn) # debug
-                nonlocal instruction_label, curr_number
-                curr_number = num
-                instruction_label.pack_forget()
-                num_button_frame.pack_forget()
+        # Starting number selection
 
-                curr_number_label = tk.Label(root, text=f"Current number: {curr_number}", font=("Arial", 20, "bold"), bg='#1DA1F2', fg='white')
-                curr_number_label.pack(pady=10)
+        num_array = list(range(8, 19))
+        self.seg_num_buttons = ctk.CTkSegmentedButton(self.parent,
+            values=num_array,
+            command = self.prepare_num,
+            font=("Helvetica", 30, "bold"))
+        self.seg_num_buttons.place(relx=0.5, rely=0.55, anchor=CENTER)
 
-                instruction_label.config(text="Choose a multiplier:")
-                instruction_label.pack(pady=10)
+    def prepare_num(self, value):
 
-                multiply_frame = tk.Frame(root, bg='#1DA1F2')
-                multiply_array = []
-                for i in [2, 3, 4]:
-                    multiply_button = tk.Button(multiply_frame, text=str(i), command=lambda m=i: multiply(curr_number, m), font=("Arial", 18), fg='#1DA1F2', bg='white', width=3, height = 1)
-                    multiply_array.append(multiply_button)
-                    multiply_button.pack(side='left', padx=10)
-                multiply_frame.pack(pady=5)
+        #for widget in self.parent.winfo_children():
+            #if widget not in {self.parent.header, self.parent.team_label, self.curr_alg_label, self.curr_player_label}:
+                #widget.destroy()
 
-                # GAME LOGIC
-                def multiply(number, multi):
-                    nonlocal curr_number, curr_player, turn
-                    number *= multi
+        self.seg_num_buttons.destroy()
+        self.curr_number = value
+        self.curr_number_label = ctk.CTkLabel(self.parent,
+            text=f"Current number: {self.curr_number}",
+            font=("Helvetica", 18))
+        self.curr_number_label.place(relx=0.5, rely=0.475, anchor=CENTER)
 
-                    if number % 2 == 0:
-                        player_scores[1 - curr_player] -= 1
-                    else:
-                        player_scores[curr_player] += 1
+        # Multiplier selection
+        self.mult_array = [2, 3, 4]
+        self.seg_mult_buttons = ctk.CTkSegmentedButton(self.parent,
+            values=self.mult_array,
+            command = self.multiply,
+            font=("Helvetica", 30, "bold"))
+        self.seg_mult_buttons.place(relx=0.5, rely=0.55, anchor=CENTER)
 
-                    if number >= 1200:
-                        if player_scores[0] == player_scores[1]:
-                            messagebox.showinfo("Game Over", "It's a tie!")
-                            root.quit()
-                        else:
-                            winner = "Player 1" if player_scores[0] > player_scores[1] else "Player 2"
-                            messagebox.showinfo("Game Over", f"{winner} wins!")
-                            root.quit()
-                    else:
-                        curr_player = 1 - curr_player
-                        player_label.config(text=f"Player {curr_player + 1}'s turn")
-                        player_label.pack(pady=(10, 40))
-                        turn+=1
+    def multiply(self, value):
 
-                    curr_number_label.config(text=f"Current number: {number}")
-                    curr_number_label.pack_forget()
-                    score_label.config(text=f"Player 1: {player_scores[0]} | Player 2: {player_scores[1]}")
-                    multiply_frame.pack_forget()
-                    prepare_num(number)
+        self.curr_number *= value
+
+        if self.curr_number % 2 == 0:
+            self.player_scores[1 - int(self.curr_player)] -= 1
+        else:
+            self.player_scores[int(self.curr_player)] += 1
+
+        if self.curr_number >= 1200:
+            self.score_label.configure(text=f"Player 1: {self.player_scores[0]} | Player 2: {self.player_scores[1]}")
+            self.round_summary()
+        else:
+            self.curr_number_label.configure(text=f"Current number: {self.curr_number}")
             
-        
-        start()
-        root.mainloop()
+            self.score_label.configure(text=f"Player 1: {self.player_scores[0]} | Player 2: {self.player_scores[1]}")
 
-    interface()
+            self.curr_player = "0" if self.curr_player == "1" else "1"
+            self.curr_player_label.configure(text=f"Player {int(self.curr_player) + 1}'s turn")
 
-  
+            self.seg_mult_buttons.destroy()
+            self.seg_mult_buttons = ctk.CTkSegmentedButton(self.parent,
+                values=self.mult_array,
+                command = self.multiply,
+                font=("Helvetica", 30, "bold"))
+            self.seg_mult_buttons.place(relx=0.5, rely=0.55, anchor=CENTER)
+
+    def round_summary(self):
+
+        self.seg_mult_buttons.destroy()
+        self.curr_player_label.destroy()
+
+        self.round_summary_label = ctk.CTkLabel(self.parent,
+            text="Round summary:",
+            font=("Helvetica", 22, "bold"))
+        self.round_summary_label.place(relx=0.5, rely=0.325, anchor=CENTER)
+
+        self.curr_alg_label.configure(text=f"Algorithm used: {self.curr_alg}",
+            font=("Helvetica", 18))
+        self.curr_alg_label.place(relx=0.5, rely=0.4, anchor=CENTER)
+
+        self.curr_number_label.configure(text=f"Final number: {self.curr_number}",
+            font=("Helvetica", 18))
+        self.curr_number_label.place(relx=0.5, rely=0.475, anchor=CENTER)
+
+        self.result_label = ctk.CTkLabel(self.parent,
+            text="You shouldn't be able to read this ;)",
+            font=("Helvetica", 30))
+        self.result_label.place(relx=0.5, rely=0.575, anchor=CENTER)
+
+
+        if self.player_scores[0] == self.player_scores[1]:
+            self.result_label.configure(text="It's a tie!")
+        else:
+            self.result_label.configure(text=f"Player {1 if self.player_scores[0] > self.player_scores[1] else 2} wins!")
+
+        self.play_again_button = ctk.CTkButton(self.parent, text="Play again!",
+            command=self.play_again,
+            font=("Helvetica", 18))
+        self.play_again_button.place(relx=0.5, rely=0.7, anchor=CENTER)
+
+    def play_again(self):
+        for widget in self.parent.winfo_children():
+            if widget not in {self.parent.header, self.parent.team_label}:
+                widget.destroy()
+
+        self.player_scores = [0, 0]
+        self.curr_number = None
+        self.curr_player = self.parent.play_rad_var.get()
+
+        self.parent.starting_param_screen()
+
+Game = StartUI()
+Game.mainloop()
