@@ -2,15 +2,21 @@ import GameTree
 
 
 class HeurTreeNode(GameTree.TreeNode):
+	def __init__(self, startingNumber, depth=0):
+		super().__init__(startingNumber, depth)
+		self.bestmove = None
 
-    def bestmove(self):
-        return round((self.p1points - self.p2points) + (1200 - self.gameNum) * 0.02,2)  # Fromula, kura dod koeficentu. (Vel būs uzalbota)
+	def bestMove(self):
+		return round((self.p1points - self.p2points) + (1200 - self.gameNum) * 0.02,2)  # Fromula, kura dod koeficentu. (Vel būs uzalbota)
 
-    def printTree(self):
-        for node in self.children:
-            print("--" * node.turnCount + ">" + str(
-                node.gameNum) + f" (P1: {node.p1points}, P2: {node.p2points}), Bestmove: {node.bestmove()}")
-            node.printTree()
+	def printTree(self):
+		for node in self.children:
+			print("--" * node.turnCount + ">" + str(node.gameNum) + f" (P1: {node.p1points}, P2: {node.p2points}), Bestmove: {node.bestmove}")
+			node.printTree()
+
+	def addPoints(self):
+		super().addPoints()
+		self.bestmove = self.bestMove()
 
 
 """
@@ -31,6 +37,6 @@ def ShortWinP1(node, path=[]):
 """
 
 if __name__ == '__main__':
-    Tree = HeurTreeNode(8)
-    Tree.generateLevel(5)
-    Tree.printTree()
+	Tree = HeurTreeNode(8)
+	Tree.generateLevel(5)
+	Tree.printTree()
