@@ -15,6 +15,7 @@ class TreeNode:
     # Pievieno klāt pēcteča mezglu
     def addChild(self, node):
         self.children.append(node)
+        node.parent = self
 
     def __eq__(self, other):
         if not isinstance(other, TreeNode):
@@ -29,11 +30,6 @@ class TreeNode:
     def __hash__(self):
         return hash((self.gameNum, self.p1points, self.p2points, self.turnCount))
 
-    #  Sāk izveidot koku
-    def buildTree(self, startNumb, depth=3):
-        createdNodes = set()
-        TreeNode.createLevel(self, createdNodes, depth)  # uzstādīts dzīļums - 3 līmeņi
-        return self
 
     """
         Galvenā fukcija, kura ģenerē koku, pēc nosacījumiem noteiktiem nosacījumiem.
@@ -63,7 +59,7 @@ class TreeNode:
             node.p1points = self.p1points
             node.p2points = self.p2points
 
-            TreeNode.addPoints(node)
+            node.addPoints()
 
             print(f"Mezgls {node.gameNum} (P1: {node.p1points}, P2: {node.p2points}) ID: {id(node)}") # to var nokomentēt, tas tikai priekš self pārbaudei
 
@@ -81,17 +77,17 @@ class TreeNode:
                         break
 
     # Sistēma kā pievieno punktus vai atņem spēlētājiem spēles laikā.
-    def addPoints(node):
-        if node.turnCount % 2 == 1:
-            if node.gameNum % 2 == 0:
-                node.p2points -= 1
+    def addPoints(self):
+        if self.turnCount % 2 == 1:
+            if self.gameNum % 2 == 0:
+                self.p2points -= 1
             else:
-                node.p1points += 1
+                self.p1points += 1
         else:
-            if node.gameNum % 2 == 0:
-                node.p1points -= 1
+            if self.gameNum % 2 == 0:
+                self.p1points -= 1
             else:
-                node.p2points += 1
+                self.p2points += 1
 
     # ģenerē no dota node noteiktā dziļumā tālāk koku
     def generateLevel(self, depth):
