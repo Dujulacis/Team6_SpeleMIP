@@ -7,7 +7,7 @@ class HeurTreeNode(GameTree.TreeNode):
 		self.bestmove = None
 
 	def bestMove(self):
-		return round((self.p1points - self.p2points) + (1200 - self.gameNum) * 0.02,2)  # Fromula, kura dod koeficentu. (Vel būs uzalbota)
+		 return round((3 * (self.p1points - self.p2points) + ((1200 - self.gameNum) * (self.p1points - self.p2points))) / 20, 2)  # Fromula, kura dod koeficentu. (uzalbota versija)
 
 	def printTree(self):
 		for node in self.children:
