@@ -1,18 +1,5 @@
 class TreeNode:
-    def __init__(self, startingNumber, depth=0):
-        # Koka sākotnējais cipars, ar ko sākas spēle
-        self.gameNum = startingNumber
-        # Mezgla priekšteči
-        self.parent = None
-        # Mezgla pēcteči
-        self.children = []
-        # Spēlētāju punkti
-        self.p1points = 0
-        self.p2points = 0
-        # Esošais dziļuma līmenis, jeb gājienu skaits
-        self.turnCount = depth
-
-    def __init__(self, startingNumber, turnCount, p1Points, p2Points):
+    def __init__(self, startingNumber, p1Points, p2Points, turnCount=0):
         # Koka sākotnējais cipars, ar ko sākas spēle
         self.gameNum = startingNumber
         # Mezgla priekšteči
@@ -66,7 +53,7 @@ class TreeNode:
         # Ģenerē 3 dažādos variantus
         nodes = []
         for i in range(2, 5):
-            nodes.append(self.__class__(number * i, self.turnCount + 1, self.p1points, self.p2points))
+            nodes.append(self.__class__(number * i, self.p1points, self.p2points, self.turnCount + 1))
 
         # Iziet cauri veidotajiem mezgliem
         for node in nodes:
@@ -115,7 +102,7 @@ class TreeNode:
 
 if __name__ == '__main__':
     # Izveido koku ar sākotnējo skaitli
-    Tree = TreeNode(8)
+    Tree = TreeNode(8, 0, 0)
     Tree.generateLevel(3)
     # īslaicīgi, lai ģenerētu citā līmenī tālāk
     # izveletais = Tree.children[0].children[0].children[0]

@@ -1,12 +1,12 @@
 class HeurTreeNode:
-    def __init__(self, startingNumber, depth=0):
+    def __init__(self, startingNumber, p1Points, p2Points, turnCount=0):
         self.gameNum = startingNumber
-        self.depth = depth
+        self.depth = turnCount
         self.children = []
-        self.p1points = 0
-        self.p2points = 0
+        self.p1points = p1Points
+        self.p2points = p2Points
         self.bestmove = None
-        self.turnCount = depth
+        self.turnCount = turnCount
         self.node_id = id(self)  # Unikāls mezgla identifikators
 
     def addChild(self, node):
@@ -18,7 +18,7 @@ class HeurTreeNode:
     def generateLevel(self, depth):
         if depth > 0:  # ja ir ko ģenerēt
             new_game_num = self.gameNum * 2  # Loģiskā noteikuma piemērs jaunam mezglam
-            child_node = HeurTreeNode(new_game_num, self.depth + 1)
+            child_node = HeurTreeNode(new_game_num, self.p1points, self.p2points, self.depth + 1)
             self.addChild(child_node)
             child_node.generateLevel(depth - 1)
 
@@ -52,7 +52,7 @@ class HeurTreeNode:
                     break
             return minEval
 
-root = HeurTreeNode(8)
+root = HeurTreeNode(8, 0, 0)
 root.generateLevel(4)
 
 # Alfa-Beta algoritms saknei ar maksimizētāju (P1)

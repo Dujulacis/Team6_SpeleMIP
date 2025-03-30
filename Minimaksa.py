@@ -1,13 +1,8 @@
 from Heuristic import HeurTreeNode
 
 class MiniMaxTree(HeurTreeNode):
-	def __init__(self, startingNumber, depth=0, maximize = True):
-		super().__init__(startingNumber, depth)
-		self.maximize = maximize
-		self.minMaxScore = None
-
-	def __init__(self, startingNumber, turnCount, p1Points, p2Points, maximize = True):
-		super().__init__(startingNumber, turnCount, p1Points, p2Points)
+	def __init__(self, startingNumber, p1Points, p2Points, turnCount, maximize = True):
+		super().__init__(startingNumber, p1Points, p2Points, turnCount)
 		self.maximize = maximize
 		self.minMaxScore = None
 
@@ -39,7 +34,7 @@ class MiniMaxTree(HeurTreeNode):
 		self.minMax()
 
 if __name__ == "__main__":
-	miniMaxTree = MiniMaxTree(8, maximize = True)
+	miniMaxTree = MiniMaxTree(8, 0, 0, 0, maximize = True)
 	miniMaxTree.generateLevel(4)
 
 	kokaDala = miniMaxTree.children[0].children[0].children[0].children[0]

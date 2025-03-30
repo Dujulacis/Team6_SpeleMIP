@@ -2,12 +2,8 @@ import GameTree
 
 
 class HeurTreeNode(GameTree.TreeNode):
-	def __init__(self, startingNumber, depth=0):
-		super().__init__(startingNumber, depth)
-		self.bestmove = None
-
-	def __init__(self, startingNumber, turnCount, p1Points, p2Points):
-		super().__init__(startingNumber, turnCount,p1Points,p2Points)
+	def __init__(self, startingNumber, p1Points, p2Points, turnCount=0):
+		super().__init__(startingNumber, p1Points, p2Points, turnCount)
 		self.bestmove = None
 
 	def bestMove(self):
