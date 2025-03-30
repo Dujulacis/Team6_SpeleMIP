@@ -112,9 +112,14 @@ class GameUI:
             font=("Helvetica", 18))
         self.curr_alg_label.place(relx=0.5, rely=0.325, anchor=CENTER) # Of course algorithm isn't working yet
 
-        self.curr_player_label = ctk.CTkLabel(self.parent,
-            text=f"Player {int(self.curr_player) + 1}'s turn",
-            font=("Helvetica", 18, "bold"))
+        if self.curr_player == '0':
+            self.curr_player_label = ctk.CTkLabel(self.parent,
+                text="Computers turn",
+                font=("Helvetica", 18, "bold"))
+        else:
+            self.curr_player_label = ctk.CTkLabel(self.parent,
+                text="Players turn",
+                font=("Helvetica", 18, "bold"))
         self.curr_player_label.place(relx=0.5, rely=0.4, anchor=CENTER)
 
         self.score_label = ctk.CTkLabel(self.parent,
@@ -168,9 +173,15 @@ class GameUI:
                 for i, child in enumerate(reversed(Tree.children)):
                     if child.minMaxScore == 1:
                         self.multiply(3-i)
-                        self.curr_player = '1'
                         return
                 self.multiply(random.randint(2,4))
+            else:
+                for i, child in enumerate(reversed(Tree.children)):
+                    if child.minMaxScore == -1:
+                        self.multiply(3-i)
+                        return
+                self.multiply(random.randint(2,4))
+
 
     def multiply(self, value):
 
@@ -190,7 +201,10 @@ class GameUI:
             self.score_label.configure(text=f"Computer: {self.player_scores[0]} | Player: {self.player_scores[1]}")
 
             self.curr_player = "0" if self.curr_player == "1" else "1"
-            self.curr_player_label.configure(text=f"Player {int(self.curr_player) + 1}'s turn")
+            if self.curr_player == "0":
+                self.curr_player_label.configure(text=f"Computers turn")
+            else:
+                self.curr_player_label.configure(text=f"Players turn")
 
             self.seg_mult_buttons.destroy()
 
@@ -231,7 +245,10 @@ class GameUI:
         if self.player_scores[0] == self.player_scores[1]:
             self.result_label.configure(text="It's a tie!")
         else:
-            self.result_label.configure(text=f"Player {1 if self.player_scores[0] > self.player_scores[1] else 2} wins!")
+            if self.player_scores[0] > self.player_scores[1]:
+                self.result_label.configure(text=f"Computer wins!")
+            else:
+                self.result_label.configure(text=f"Player wins!")
 
         self.play_again_button = ctk.CTkButton(self.parent, text="Play again!",
             command=self.play_again,
