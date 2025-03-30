@@ -1,8 +1,9 @@
 ## IMPORTS ##
-
+import random
 import customtkinter as ctk
 from customtkinter import *
 from tkinter import messagebox
+from Minimaksa import MiniMaxTree
 
 class StartUI(ctk.CTk):
     
@@ -62,14 +63,14 @@ class StartUI(ctk.CTk):
         self.play_rad_var = ctk.StringVar(value="0")
 
         self.play_radio1 = ctk.CTkRadioButton(self,
-            text="Player 1",
+            text="Computer",
             value="0",
             variable=self.play_rad_var,
             font=("Helvetica", 18))
         self.play_radio1.place(relx=0.33, rely=0.575, anchor=CENTER)
 
         self.play_radio2 = ctk.CTkRadioButton(self,
-            text="Player 2",
+            text="Player",
             value="1",
             variable=self.play_rad_var,
             font=("Helvetica", 18))
@@ -99,13 +100,17 @@ class GameUI:
         self.curr_number = None
         self.curr_alg = self.parent.alg_rad_var.get()
         self.curr_player = self.parent.play_rad_var.get()
+        if self.curr_player == '0':
+            self.computer_maximizing = True
+        else:
+            self.computer_maximizing = False
 
         # Persistent labels
 
         self.curr_alg_label = ctk.CTkLabel(self.parent,
             text=f"Algorithm: {self.curr_alg}",
             font=("Helvetica", 18))
-        self.curr_alg_label.place(relx=0.5, rely=0.325, anchor=CENTER) # Of course algorithm isnt working yet
+        self.curr_alg_label.place(relx=0.5, rely=0.325, anchor=CENTER) # Of course algorithm isn't working yet
 
         self.curr_player_label = ctk.CTkLabel(self.parent,
             text=f"Player {int(self.curr_player) + 1}'s turn",
@@ -113,7 +118,7 @@ class GameUI:
         self.curr_player_label.place(relx=0.5, rely=0.4, anchor=CENTER)
 
         self.score_label = ctk.CTkLabel(self.parent,
-            text=f"Player 1: {self.player_scores[0]} | Player 2: {self.player_scores[1]}",
+            text=f"Computer: {self.player_scores[0]} | Player: {self.player_scores[1]}",
             font=("Helvetica", 18, "bold"))
         self.score_label.place(relx=0.5, rely=0.95, anchor=CENTER)
 
@@ -148,6 +153,25 @@ class GameUI:
             font=("Helvetica", 30, "bold"))
         self.seg_mult_buttons.place(relx=0.5, rely=0.55, anchor=CENTER)
 
+        if self.curr_player == '0':
+            self.computerMove()
+
+
+    def computerMove(self):
+        if self.curr_alg == "Alpha-Beta":
+            pass
+        else:
+            Tree = MiniMaxTree(self.curr_number, self.player_scores[0], self.player_scores[1], self.computer_maximizing)
+            Tree.generateLevel(4)
+            Tree.minMax()
+            if self.computer_maximizing:
+                for i, child in enumerate(reversed(Tree.children)):
+                    if child.minMaxScore == 1:
+                        self.multiply(3-i)
+                        self.curr_player = '1'
+                        return
+                self.multiply(random.randint(2,4))
+
     def multiply(self, value):
 
         self.curr_number *= value
@@ -158,22 +182,27 @@ class GameUI:
             self.player_scores[int(self.curr_player)] += 1
 
         if self.curr_number >= 1200:
-            self.score_label.configure(text=f"Player 1: {self.player_scores[0]} | Player 2: {self.player_scores[1]}")
+            self.score_label.configure(text=f"Computer: {self.player_scores[0]} | Player: {self.player_scores[1]}")
             self.round_summary()
         else:
             self.curr_number_label.configure(text=f"Current number: {self.curr_number}")
             
-            self.score_label.configure(text=f"Player 1: {self.player_scores[0]} | Player 2: {self.player_scores[1]}")
+            self.score_label.configure(text=f"Computer: {self.player_scores[0]} | Player: {self.player_scores[1]}")
 
             self.curr_player = "0" if self.curr_player == "1" else "1"
             self.curr_player_label.configure(text=f"Player {int(self.curr_player) + 1}'s turn")
 
             self.seg_mult_buttons.destroy()
+
             self.seg_mult_buttons = ctk.CTkSegmentedButton(self.parent,
                 values=self.mult_array,
                 command = self.multiply,
                 font=("Helvetica", 30, "bold"))
             self.seg_mult_buttons.place(relx=0.5, rely=0.55, anchor=CENTER)
+
+            if self.curr_player == '0':
+                self.computerMove()
+
 
     def round_summary(self):
 

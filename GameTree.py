@@ -12,6 +12,20 @@ class TreeNode:
         # Esošais dziļuma līmenis, jeb gājienu skaits
         self.turnCount = depth
 
+    def __init__(self, startingNumber, turnCount, p1Points, p2Points):
+        # Koka sākotnējais cipars, ar ko sākas spēle
+        self.gameNum = startingNumber
+        # Mezgla priekšteči
+        self.parent = None
+        # Mezgla pēcteči
+        self.children = []
+        # Spēlētāju punkti
+        self.p1points = p1Points
+        self.p2points = p2Points
+        # Esošais dziļuma līmenis, jeb gājienu skaits
+        self.turnCount = turnCount
+
+
     # Pievieno klāt pēcteča mezglu
     def addChild(self, node):
         self.children.append(node)
@@ -52,7 +66,7 @@ class TreeNode:
         # Ģenerē 3 dažādos variantus
         nodes = []
         for i in range(2, 5):
-            nodes.append(self.__class__(number * i, self.turnCount + 1))
+            nodes.append(self.__class__(number * i, self.turnCount + 1, self.p1points, self.p2points))
 
         # Iziet cauri veidotajiem mezgliem
         for node in nodes:
@@ -61,7 +75,7 @@ class TreeNode:
 
             node.addPoints()
 
-            print(f"Mezgls {node.gameNum} (P1: {node.p1points}, P2: {node.p2points}) ID: {id(node)}") # to var nokomentēt, tas tikai priekš self pārbaudei
+            # print(f"Mezgls {node.gameNum} (P1: {node.p1points}, P2: {node.p2points}) ID: {id(node)}") # to var nokomentēt, tas tikai priekš self pārbaudei
 
             # Pārbaude vai jau pirmstam ir veidots tāds mezgls, ja nav tad veido jaunu
             if node not in createdNodes:
@@ -73,7 +87,7 @@ class TreeNode:
                 for existing_node in createdNodes:
                     if existing_node == node:
                         self.addChild(existing_node)
-                        print(f"Mezgls {node.gameNum} (P1: {node.p1points}, P2: {node.p2points}) jau eksistē, ID: {id(existing_node)}")  # tas arī
+                        # print(f"Mezgls {node.gameNum} (P1: {node.p1points}, P2: {node.p2points}) jau eksistē, ID: {id(existing_node)}")  # tas arī
                         break
 
     # Sistēma kā pievieno punktus vai atņem spēlētājiem spēles laikā.

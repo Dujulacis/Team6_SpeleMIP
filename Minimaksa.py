@@ -6,6 +6,11 @@ class MiniMaxTree(HeurTreeNode):
 		self.maximize = maximize
 		self.minMaxScore = None
 
+	def __init__(self, startingNumber, turnCount, p1Points, p2Points, maximize = True):
+		super().__init__(startingNumber, turnCount, p1Points, p2Points)
+		self.maximize = maximize
+		self.minMaxScore = None
+
 	def minMax(self):
 			if self.children:
 				for child in self.children:

@@ -6,8 +6,12 @@ class HeurTreeNode(GameTree.TreeNode):
 		super().__init__(startingNumber, depth)
 		self.bestmove = None
 
+	def __init__(self, startingNumber, turnCount, p1Points, p2Points):
+		super().__init__(startingNumber, turnCount,p1Points,p2Points)
+		self.bestmove = None
+
 	def bestMove(self):
-		 return round((3 * (self.p1points - self.p2points) + ((1200 - self.gameNum) * (self.p1points - self.p2points))) / 20, 2)  # Fromula, kura dod koeficentu. (uzalbota versija)
+		 return round((3 * (self.p1points - self.p2points) + ((1200 - self.gameNum) * (self.p1points - self.p2points))) / 20, 2)  # Fromula, kura dod koeficentu. (uzlabota versija)
 
 	def printTree(self):
 		for node in self.children:
