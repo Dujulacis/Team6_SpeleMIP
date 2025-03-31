@@ -7,6 +7,12 @@ class MiniMaxTree(HeurTreeNode):
 		self.minMaxScore = None
 
 	def minMax(self):
+			if self.gameNum >= 1200:
+				if self.maximize:
+					self.minMaxScore = 1
+				else:
+					self.minMaxScore = -1
+				return
 			if self.children:
 				for child in self.children:
 					child.maximize = not self.maximize
@@ -34,7 +40,7 @@ class MiniMaxTree(HeurTreeNode):
 		self.minMax()
 
 if __name__ == "__main__":
-	miniMaxTree = MiniMaxTree(8, 0, 0, 0, maximize = True)
+	miniMaxTree = MiniMaxTree(99, 1, 1, 4, maximize = True)
 	miniMaxTree.generateLevel(4)
 
 	kokaDala = miniMaxTree.children[0].children[0].children[0].children[0]
