@@ -1,5 +1,6 @@
 from Heuristic import HeurTreeNode
- """
+
+"""
 Alpha-beta atzarošanas algoritms ir būtībā Minimax uzlabota versija.
 Tas izmanto alpha un beta robežvērtības, lai atsijātu nevajadzīgus spēles koka zarus, 
 kas ļauj būtiski paātrināt aprēķinu procesu, saglabājot to pašu optimālo rezultātu.
@@ -41,7 +42,7 @@ class AlphaBetaTree(HeurTreeNode):
         
         return self.alphaBetaScore
     
-    def generateLevel(self, depth): Ģenerē koku līdz 4. līmenim un aprēķina AlphaBeta vērtības
+    def generateLevel(self, depth): #Ģenerē koku līdz 4. līmenim un aprēķina AlphaBeta vērtības
         super().generateLevel(depth)          # Ģenerē nākamo līmeni
         self.alphaBeta(float('-inf'), float('inf')) # Sākotnējās robežas ir bezgalības
 

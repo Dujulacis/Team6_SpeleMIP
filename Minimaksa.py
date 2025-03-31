@@ -1,11 +1,13 @@
 from Heuristic import HeurTreeNode
 
-class MiniMaxTree(HeurTreeNode):
 """
 Minimax algoritms tiek izmantots spēles koka ģenerēšanai un optimālā gājiena izvēlei.
 Rekursīvi tiek aprēķināti visi iespējamie gājieni, un, balstoties uz heiristisku novērtējumu, 
 tiek izvēlēts labākais risinājums (gājiens), pieņemot, ka pretinieks arī spēlē optimāli.
 """
+
+class MiniMaxTree(HeurTreeNode):
+
 	# Inicializē spēles koka mezglu, izmantojot HeurTreeNode klasi
 	def __init__(self, startingNumber, p1Points, p2Points, turnCount, maximize = True):
 		super().__init__(startingNumber, p1Points, p2Points, turnCount)
