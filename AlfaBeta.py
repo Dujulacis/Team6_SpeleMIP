@@ -1,63 +1,34 @@
-class HeurTreeNode:
-    def __init__(self, startingNumber, p1Points, p2Points, turnCount=0):
-        self.gameNum = startingNumber
-        self.depth = turnCount
-        self.children = []
-        self.p1points = p1Points
-        self.p2points = p2Points
-        self.bestmove = None
-        self.turnCount = turnCount
-        self.node_id = id(self)  # Unikāls mezgla identifikators
-
-    def addChild(self, node):
-        if node.node_id not in [child.node_id for child in self.children]:
-            self.children.append(node)
+def alphaBeta(self, alpha, beta):
+    if not self.children:
+        if self.p1points > self.p2points:
+            self.alphaBetaScore = 1
+        elif self.p1points < self.p2points:
+            self.alphaBetaScore = -1
         else:
-            print(f"Mezgls {node.gameNum} jau eksistē, ID: {node.node_id}")
+            self.alphaBetaScore = 0
+        print(f"Leaf node {self.gameNum}, P1: {self.p1points}, P2: {self.p2points}, Score: {self.alphaBetaScore}")
+        return self.alphaBetaScore
 
-    def generateLevel(self, depth):
-        if depth > 0:  # ja ir ko ģenerēt
-            new_game_num = self.gameNum * 2  # Loģiskā noteikuma piemērs jaunam mezglam
-            child_node = HeurTreeNode(new_game_num, self.p1points, self.p2points, self.depth + 1)
-            self.addChild(child_node)
-            child_node.generateLevel(depth - 1)
+    if self.maximize:
+        value = float('-inf')
+        for child in self.children:
+            child.maximize = False
+            value = max(value, child.alphaBeta(alpha, beta))
+            alpha = max(alpha, value)
+            if alpha >= beta:
+                break
+        self.alphaBetaScore = value
+        print(f"Max node {self.gameNum}, P1: {self.p1points}, P2: {self.p2points}, Score: {self.alphaBetaScore}")
+        return value
+    else:
+        value = float('inf')
+        for child in self.children:
+            child.maximize = True
+            value = min(value, child.alphaBeta(alpha, beta))
+            beta = min(beta, value)
+            if beta <= alpha:
+                break 
+        self.alphaBetaScore = value
+        print(f"Min node {self.gameNum}, P1: {self.p1points}, P2: {self.p2points}, Score: {self.alphaBetaScore}")
+        return value
 
-    def evaluate(self):
-        # Minimax izmantotās aplēses piemērs
-        return self.p1points - self.p2points  # starpība starp 1. un 2. spēlētāja punktiem.
-
-    def alphaBeta(self, alpha, beta, maximizingPlayer):
-        """
-        Alfa-Beta griešanas algoritms minimax noteikšanai
-        """
-        if self.depth == 0 or not self.children:  # Galīgais mezgls vai sasniegtais maksimālais dziļums
-            return self.evaluate()
-
-        if maximizingPlayer:  # Maksimizētāja gājiens (P1)
-            maxEval = float('-inf')
-            for child in self.children:
-                eval = child.alphaBeta(alpha, beta, False) 
-                maxEval = max(maxEval, eval)
-                alpha = max(alpha, eval)
-                if beta <= alpha:
-                    break
-            return maxEval
-        else:  # Minimizētāja gājiens (P2)
-            minEval = float('inf')
-            for child in self.children:
-                eval = child.alphaBeta(alpha, beta, True)
-                minEval = min(minEval, eval)
-                beta = min(beta, eval)
-                if beta <= alpha:
-                    break
-            return minEval
-
-root = HeurTreeNode(8, 0, 0)
-root.generateLevel(4)
-
-# Alfa-Beta algoritms saknei ar maksimizētāju (P1)
-alpha = float('-inf')
-beta = float('inf')
-result = root.alphaBeta(alpha, beta, True)
-
-print(f"Alpha Beta result: {result}")
