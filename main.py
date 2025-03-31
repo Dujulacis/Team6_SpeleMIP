@@ -110,15 +110,15 @@ class GameUI:
         self.curr_alg_label = ctk.CTkLabel(self.parent,
             text=f"Algorithm: {self.curr_alg}",
             font=("Helvetica", 18))
-        self.curr_alg_label.place(relx=0.5, rely=0.325, anchor=CENTER) # Of course algorithm isn't working yet
+        self.curr_alg_label.place(relx=0.5, rely=0.325, anchor=CENTER)
 
         if self.curr_player == '0':
             self.curr_player_label = ctk.CTkLabel(self.parent,
-                text="Computers turn",
+                text="Choose starting number for computer:",
                 font=("Helvetica", 18, "bold"))
         else:
             self.curr_player_label = ctk.CTkLabel(self.parent,
-                text="Players turn",
+                text="Choose starting number:",
                 font=("Helvetica", 18, "bold"))
         self.curr_player_label.place(relx=0.5, rely=0.4, anchor=CENTER)
 
@@ -139,10 +139,11 @@ class GameUI:
 
     def prepare_num(self, value):
 
-        #for widget in self.parent.winfo_children():
-            #if widget not in {self.parent.header, self.parent.team_label, self.curr_alg_label, self.curr_player_label}:
-                #widget.destroy()
-
+        if self.curr_player == '0':
+            self.curr_player_label.configure(text="Computers turn:")
+        else:
+            self.curr_player_label.configure(text="Players turn:")
+        
         self.seg_num_buttons.destroy()
         self.curr_number = value
         self.curr_number_label = ctk.CTkLabel(self.parent,
@@ -159,9 +160,12 @@ class GameUI:
         self.seg_mult_buttons.place(relx=0.5, rely=0.55, anchor=CENTER)
 
         if self.curr_player == '0':
-            self.computerMove()
+            self.seg_mult_buttons.destroy()
+            self.curr_player_label.configure(text="Computer is thinking...")
+            self.curr_number_label.configure(text=f"Current number: {self.curr_number}")
+            self.parent.after(2000, self.computerMove)
 
-
+            
     def computerMove(self):
         if self.curr_alg == "Alpha-Beta":
             pass
@@ -185,6 +189,7 @@ class GameUI:
 
     def multiply(self, value):
 
+
         self.curr_number *= value
 
         if self.curr_number % 2 == 0:
@@ -195,18 +200,21 @@ class GameUI:
         if self.curr_number >= 1200:
             self.score_label.configure(text=f"Computer: {self.player_scores[0]} | Player: {self.player_scores[1]}")
             self.round_summary()
+            return
         else:
             self.curr_number_label.configure(text=f"Current number: {self.curr_number}")
             
             self.score_label.configure(text=f"Computer: {self.player_scores[0]} | Player: {self.player_scores[1]}")
 
             self.curr_player = "0" if self.curr_player == "1" else "1"
+
+            if hasattr(self, 'seg_mult_buttons'):
+                self.seg_mult_buttons.destroy() 
+
             if self.curr_player == "0":
                 self.curr_player_label.configure(text=f"Computers turn")
             else:
                 self.curr_player_label.configure(text=f"Players turn")
-
-            self.seg_mult_buttons.destroy()
 
             self.seg_mult_buttons = ctk.CTkSegmentedButton(self.parent,
                 values=self.mult_array,
@@ -215,7 +223,10 @@ class GameUI:
             self.seg_mult_buttons.place(relx=0.5, rely=0.55, anchor=CENTER)
 
             if self.curr_player == '0':
-                self.computerMove()
+                self.seg_mult_buttons.destroy()
+                self.curr_player_label.configure(text="Computer is thinking...")
+                self.curr_number_label.configure(text=f"Current number: {self.curr_number}")
+                self.parent.after(2000, self.computerMove)
 
 
     def round_summary(self):
