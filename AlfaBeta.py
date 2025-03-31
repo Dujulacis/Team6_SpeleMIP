@@ -21,7 +21,7 @@ class AlphaBetaTree(HeurTreeNode):
                 value = max(value, child.alphaBeta(alpha, beta))
                 alpha = max(alpha, value)
                 if alpha >= beta:
-                    break  # Beta cut-off
+                    break
             self.alphaBetaScore = value
         else:
             value = float('inf')
@@ -30,7 +30,7 @@ class AlphaBetaTree(HeurTreeNode):
                 value = min(value, child.alphaBeta(alpha, beta))
                 beta = min(beta, value)
                 if beta <= alpha:
-                    break  # Alpha cut-off
+                    break
             self.alphaBetaScore = value
         
         return self.alphaBetaScore
