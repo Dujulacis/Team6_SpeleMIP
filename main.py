@@ -4,6 +4,7 @@ import customtkinter as ctk
 from customtkinter import *
 from tkinter import messagebox
 from Minimaksa import MiniMaxTree
+from AlfaBeta import AlphaBetaTree
 
 class StartUI(ctk.CTk):
     
@@ -168,7 +169,20 @@ class GameUI:
             
     def computerMove(self):
         if self.curr_alg == "Alpha-Beta":
-            pass
+            Tree = AlphaBetaTree(self.curr_number, self.player_scores[0], self.player_scores[1], self.computer_maximizing)
+            Tree.generateLevel(4)
+            if self.computer_maximizing:
+                for i, child in enumerate(reversed(Tree.children)):
+                    if child.alphaBetaScore == 1:
+                        self.multiply(3-i)
+                        return
+                self.multiply(random.randint(2,4))
+            else:
+                for i, child in enumerate(reversed(Tree.children)):
+                    if child.alphaBetaScore == -1:
+                        self.multiply(3-i)
+                        return
+                self.multiply(random.randint(2,4))
         else:
             Tree = MiniMaxTree(self.curr_number, self.player_scores[0], self.player_scores[1], self.computer_maximizing)
             Tree.generateLevel(4)

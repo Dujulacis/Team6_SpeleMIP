@@ -45,4 +45,3 @@ if __name__ == "__main__":
     
     kokaDala = alphaBetaTree.children[0].children[0].children[0].children[0]
     kokaDala.generateLevel(4)
-    kokaDala.alphaBeta(float('-inf'), float('inf'))
