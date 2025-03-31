@@ -169,7 +169,10 @@ class GameUI:
             
     def computerMove(self):
         if self.curr_alg == "Alpha-Beta":
-            Tree = AlphaBetaTree(self.curr_number, self.player_scores[0], self.player_scores[1], 0, maximize=self.computer_maximizing)
+            if self.computer_maximizing == True:
+                Tree = AlphaBetaTree(self.curr_number, self.player_scores[0], self.player_scores[1], 0, maximize=self.computer_maximizing)
+            else:
+                Tree = AlphaBetaTree(self.curr_number, self.player_scores[0], self.player_scores[1], 1, maximize=self.computer_maximizing)
             Tree.generateLevel(4)
             if self.computer_maximizing:
                 for i, child in enumerate(reversed(Tree.children)):
@@ -184,7 +187,10 @@ class GameUI:
                         return
                 self.multiply(random.randint(2,4))
         else:
-            Tree = MiniMaxTree(self.curr_number, self.player_scores[0], self.player_scores[1], 0, maximize=self.computer_maximizing)
+            if self.computer_maximizing == True:
+                Tree = MiniMaxTree(self.curr_number, self.player_scores[0], self.player_scores[1], 0, maximize=self.computer_maximizing)
+            else:
+                Tree = MiniMaxTree(self.curr_number, self.player_scores[0], self.player_scores[1], 1, maximize=self.computer_maximizing)
             Tree.generateLevel(4)
             Tree.minMax()
             if self.computer_maximizing:

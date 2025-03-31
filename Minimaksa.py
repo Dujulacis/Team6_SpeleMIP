@@ -9,9 +9,9 @@ class MiniMaxTree(HeurTreeNode):
 	def minMax(self):
 			if self.gameNum >= 1200:
 				if self.maximize:
-					self.minMaxScore = 1
-				else:
 					self.minMaxScore = -1
+				else:
+					self.minMaxScore = 1
 				return
 			if self.children:
 				for child in self.children:
