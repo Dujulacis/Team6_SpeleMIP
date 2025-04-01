@@ -192,7 +192,6 @@ class GameUI:
             else:
                 Tree = MiniMaxTree(self.curr_number, self.player_scores[0], self.player_scores[1], 1, maximize=self.computer_maximizing)
             Tree.generateLevel(4)
-            Tree.minMax()
             if self.computer_maximizing:
                 for i, child in enumerate(reversed(Tree.children)):
                     if child.minMaxScore == 1:
